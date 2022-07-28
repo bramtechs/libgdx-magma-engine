@@ -1,5 +1,7 @@
 engine/build/
 engine/bin/
+engine-tests/build/
+engine-tests/bin/
 
 export
 

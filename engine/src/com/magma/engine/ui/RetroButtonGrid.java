@@ -2,9 +2,14 @@ package com.magma.engine.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.magma.engine.assets.Shapes;
+
+import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public abstract class RetroButtonGrid extends Table {
 
@@ -15,6 +20,8 @@ public abstract class RetroButtonGrid extends Table {
     private final GridPoint2 selected;
 
     private boolean hasFocus;
+    private Color bgColor;
+    private Color fgColor;
 
     public RetroButtonGrid(String... options) {
         this.options = options;
@@ -37,6 +44,8 @@ public abstract class RetroButtonGrid extends Table {
             int y = i / columns;
             buttons[x][y] = butt;
         }
+
+        this.setColor(Color.BLACK, Color.WHITE);
     }
 
     public void focus() {
@@ -60,14 +69,6 @@ public abstract class RetroButtonGrid extends Table {
         }
     }
 
-    public RetroButton getSelected() {
-        return buttons[selected.x][selected.y];
-    }
-
-    private int getSelectedID() {
-        return selected.y * columns + selected.x;
-    }
-
     public void moveCursor(int x, int y) {
         setCursor(selected.x + x, selected.y + y);
     }
@@ -79,7 +80,15 @@ public abstract class RetroButtonGrid extends Table {
         buttons[selected.x][selected.y].select();
     }
 
-    protected abstract void pressed(int id);
+    public void setColor(Color bgColor, Color fgColor) {
+        this.bgColor = bgColor;
+        this.fgColor = fgColor;
+        for (int y = 0; y < buttons.length; y++) {
+            for (int x = 0; x < buttons[0].length; x++) {
+                buttons[x][y].setColor(fgColor);
+            }
+        }
+    }
 
     @Override
     public void act(float delta) {
@@ -103,6 +112,26 @@ public abstract class RetroButtonGrid extends Table {
             }
         }
         super.act(delta);
+    }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        ShapeDrawer sh = Shapes.getInstance();
+        sh.setColor(bgColor);
+        sh.filledRectangle(getX(), getY(), getWidth(), getHeight());
+        sh.setColor(fgColor);
+        sh.rectangle(getX(), getY(), getWidth(), getHeight(), 3f);
+        super.draw(batch, parentAlpha);
+    }
+
+    protected abstract void pressed(int id);
+
+    public RetroButton getSelected() {
+        return buttons[selected.x][selected.y];
+    }
+
+    private int getSelectedID() {
+        return selected.y * columns + selected.x;
     }
 
 }

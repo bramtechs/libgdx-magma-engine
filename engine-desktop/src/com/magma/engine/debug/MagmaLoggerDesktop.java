@@ -81,7 +81,7 @@ public class MagmaLoggerDesktop extends MagmaLogger {
         StringWriter errors = new StringWriter();
         e.printStackTrace(new PrintWriter(errors));
         String message = errors.toString();
-        log("EXCEPTION", message, Level.ERROR);
+        log("❌ EXCEPTION ❌", message, Level.ERROR);
     }
 
     private static MagmaLoggerDesktop get(){

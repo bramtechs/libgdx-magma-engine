@@ -103,7 +103,7 @@ public class MagmaLogger {
     protected void _logException(Exception e){
         e.printStackTrace();
         String message = e.toString();
-        log("EXCEPTION", message, Level.ERROR);
+        log("❌ EXCEPTION ❌", message, Level.ERROR);
     }
 
     public static void printArray(Object sender, Iterable<?> array) {

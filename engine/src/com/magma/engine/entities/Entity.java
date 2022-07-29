@@ -78,7 +78,7 @@ public class Entity {
 	}
 	
 	public String toString() {
-		return "HP: " + health + "\nEN: " + energy + "\nFE: " + fear + "\n" + getStats().toString();
+		return this.getClass().getSimpleName() + " | HP: " + health + "\nEN: " + energy + "\nFE: " + fear + "\n" + getStats().toString();
 	}
 
 	public int getHealth() {

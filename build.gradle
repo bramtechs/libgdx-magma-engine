@@ -50,25 +50,6 @@ project(":engine") {
     }
 }
 
-// magma engine - simple tester 
-project(":engine-tests") {
-    apply plugin: "java-library"
-
-    dependencies {
-        implementation project(":engine-desktop")
-        implementation project(":engine")
-        api "com.badlogicgames.gdx:gdx:$gdxVersion"
-        api "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
-        api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-        api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        api "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
-        api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
-
-        api "space.earlygrey:shapedrawer:$shapedrawerVersion"
-    }
-}
-
 // magma engine - desktop specific
 // TODO: combine with desktoplauncher?
 project(":engine-desktop") {

@@ -19,8 +19,6 @@ import com.magma.engine.debug.modules.InfoModule;
 import com.magma.engine.debug.modules.MapModule;
 import com.magma.engine.debug.modules.Module;
 import com.magma.engine.debug.modules.StageModule;
-import com.magma.engine.maps.MapStage;
-import com.magma.engine.stages.StageSwitcher;
 
 public class Debugger extends JFrame implements Disposable {
 

@@ -37,9 +37,9 @@ public class MagmaLoggerDesktop extends MagmaLogger {
 
         // append end text
         MagmaLoggerDesktop i = get();
-        i.html += "<hr/>";
+        i.htmlLog += "<hr/>";
         log("", "State: " + (crashed ? "FAILED" : "SUCCEEDED"));
-        i.html += "</p>";
+        i.htmlLog += "</p>";
 
         // print to a file
         FileHandle handle = new FileHandle(file + "/logs/");
@@ -55,14 +55,14 @@ public class MagmaLoggerDesktop extends MagmaLogger {
         handle = handle.child(name);
         String path = handle.file().getAbsolutePath();
         log("MagmaLogger", "Log file saved to: " + path);
-        handle.writeString(i.html, false);
+        handle.writeString(i.htmlLog, false);
 
         Gdx.app.log("MagmaLogger", "Log saved to " + path);
         return path;
     }
 
     public void printHeader() {
-        html = "";
+        htmlLog = "";
         if (name == null) {
             name = "MagmaEngineGame";
             Gdx.app.log("MagmaLogger", "No game name set: defaulting to " + name);
@@ -70,10 +70,10 @@ public class MagmaLoggerDesktop extends MagmaLogger {
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
-        html += "<h1>" + name + "</h1>";
-        html += "<h2>Log from: " + dtf.format(now) + "</h2>";
-        html += "<hr/>";
-        html += "<p>";
+        htmlLog += "<h1>" + name + "</h1>";
+        htmlLog += "<h2>Log from: " + dtf.format(now) + "</h2>";
+        htmlLog += "<hr/>";
+        htmlLog += "<p>";
     }
 
     @Override

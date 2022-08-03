@@ -34,7 +34,7 @@ public class GameStage extends CollisionStage {
             cameraBehavior.remove();
         }
         cameraBehavior = behavior;
-        cameraBehavior.addSource(this);
+        cameraBehavior.addCamera(this);
         addActor(cameraBehavior);
     }
 
@@ -43,7 +43,7 @@ public class GameStage extends CollisionStage {
             cameraBehaviorUI.remove();
         }
         cameraBehaviorUI = behavior;
-        cameraBehaviorUI.addSource(ui);
+        cameraBehaviorUI.addCamera(ui);
         ui.addActor(cameraBehaviorUI);
     }
 

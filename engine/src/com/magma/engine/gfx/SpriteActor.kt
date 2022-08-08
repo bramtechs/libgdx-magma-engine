@@ -31,7 +31,7 @@ abstract class SpriteActor(var region: TextureRegion) : Actor(), Drawable, Custo
 
         // resize to world units
         if (AUTO_SCALE) {
-            setScale(1f / MapSession.getTileSize().x, 1f / MapSession.getTileSize().y)
+            setScale(1f / MapSession.tileSize.x, 1f / MapSession.tileSize.y)
         } else {
             setScale(1f)
         }

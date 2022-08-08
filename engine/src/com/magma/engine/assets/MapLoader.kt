@@ -12,7 +12,7 @@ object MapLoader {
 
 	fun loadTilemap(mapName: String): TiledMap {
         // autofill mapPath handle
-        val fullPath = MagmaGame.assetPrefix + "maps/" + mapName + ".tmx"
+        val fullPath = MagmaGame.assetFolder + "maps/" + mapName + ".tmx"
         Gdx.app.log("MapStage", "Loading map $fullPath")
 
         // check if file exists

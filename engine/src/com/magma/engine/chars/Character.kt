@@ -6,12 +6,14 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Shape2D
 import com.magma.engine.collision.Triggered
+import com.magma.engine.entities.Entity
 import com.magma.engine.entities.EntityComponent
 import com.magma.engine.gfx.AnimSlot
 import com.magma.engine.gfx.AnimatedSprite
 import com.magma.engine.utils.MagmaMath
 
 abstract class Character(
+    override val entity: Entity,
     private var animUp: AnimSlot,
     private var animDown: AnimSlot,
     private var animSide: AnimSlot

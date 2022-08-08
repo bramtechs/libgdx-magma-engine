@@ -26,7 +26,7 @@ public class GameStage extends CollisionStage {
         super(viewports.get(), batch);
         this.camera = getCamera();
         this.viewports = viewports;
-        this.ui = new Stage(viewports.getUI(), batch);
+        this.ui = new Stage(viewports.getUi(), batch);
     }
 
     public void setCameraBehavior(CameraBehavior behavior) {

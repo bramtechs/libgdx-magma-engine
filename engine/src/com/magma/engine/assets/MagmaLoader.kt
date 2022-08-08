@@ -12,7 +12,7 @@ import com.magma.engine.MagmaGame
 
 object MagmaLoader : AssetManager() {
 
-    val skin: Skin = Skin();
+    val skin: Skin = Skin()
 
     init {
         MagmaGame.disposeOnExit(this)
@@ -21,7 +21,7 @@ object MagmaLoader : AssetManager() {
     fun <T> request(fileName: String, type: Class<T>, engine: Boolean): T {
         var name = fileName
         if (!engine) {
-            name = MagmaGame.assetPrefix + fileName
+            name = MagmaGame.assetFolder + fileName
         }
         if (isLoaded(name)) {
             load(name, type)
@@ -94,7 +94,7 @@ object MagmaLoader : AssetManager() {
     val allMapNames: ArrayList<String>
         get() {
             val list = ArrayList<String>()
-            val mapFolder = Gdx.files.internal(MagmaGame.assetPrefix + "/maps")
+            val mapFolder = Gdx.files.internal(MagmaGame.assetFolder + "/maps")
             if (!mapFolder.exists()) {
                 Gdx.app.log("AssetLoader", "Could not find the map folder.")
                 return list

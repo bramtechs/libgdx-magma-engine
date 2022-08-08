@@ -1,104 +1,75 @@
-package com.magma.engine.stages;
+package com.magma.engine.stages
 
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.graphics.Camera
+import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.utils.viewport.FitViewport
+import com.badlogic.gdx.utils.viewport.ScreenViewport
+import com.badlogic.gdx.utils.viewport.Viewport
 
-public class ViewportContext {
-    private Viewport view;
-    private Viewport uiView;
+class ViewportContext (
+    private var view: Viewport,
+    private var ui: Viewport
+    ){
 
-    private ViewportContext() {
+    init {
+        ins = this
     }
 
-    /**
-     * Creates two viewports of game and ui where the game consists of tiles on a
-     * grid and the ui has a fixed resolution, aka a 'retro' game.
-     */
-    public static ViewportContext createRetro(int gameWidth, int gameHeight, int uiWidth, int uiHeight) {
-        ViewportContext c = new ViewportContext();
-        c.view = new FitViewport(gameWidth, gameHeight);
-        c.uiView = new FitViewport(uiWidth, uiHeight);
-        return c;
-    }
+    companion object {
+        private lateinit var ins: ViewportContext
 
-    /**
-     * Creates two viewports of the game and ui that match the window size,
-     * defintion of a 'modern' game.
-     */
-    public static ViewportContext createModern(Camera camera) {
-        ViewportContext c = new ViewportContext();
-        c.view = new ScreenViewport(camera);
-        c.uiView = new ScreenViewport();
-        c.view.setCamera(camera);
-        return c;
-    }
+        val width: Float
+            get() = ins.view.worldWidth
+        val height: Float
+            get() = ins.view.worldHeight
+        val uiWidth: Float
+            get() = ins.ui.worldHeight
+        val uiHeight: Float
+            get() = ins.ui.worldHeight
+        val center: Vector2
+            get() = Vector2(width * 0.5f, height * 0.5f)
+        val uiCenter: Vector2
+            get() = Vector2(uiWidth * 0.5f, uiHeight * 0.5f)
+        val camera: Camera
+            get() = ins.view.camera
+        val uiCamera: Camera
+            get() = ins.ui.camera
+        val orthoCamera: OrthographicCamera
+            get() = ins.view.camera as OrthographicCamera
+        val uIOrthoCamera: OrthographicCamera
+            get() = ins.ui.camera as OrthographicCamera
 
-    /**
-     * Creates an context storing two viewports of the game and ui.
-     */
-    public static ViewportContext createCustom(Viewport view, Viewport uiView) {
-        ViewportContext c = new ViewportContext();
-        c.view = view;
-        c.uiView = uiView;
-        return c;
-    }
+        init {
+            createRetro(40,30,640,480)
+        }
 
-    public void resize(int width, int height) {
-        view.update(width, height);
-        uiView.update(width, height);
-    }
+        fun resize(width: Int, height: Int) {
+            ins.view.update(width, height)
+            ins.ui.update(width, height)
+        }
 
-    public Viewport get() {
-        return view;
-    }
+        /**
+         * Creates two viewports of game and ui where the game consists of tiles on a
+         * grid and the ui has a fixed resolution, aka a 'retro' game.
+         */
+        fun createRetro(gameWidth: Int, gameHeight: Int, uiWidth: Int, uiHeight: Int): ViewportContext {
+            return ViewportContext(FitViewport(gameWidth.toFloat(), gameHeight.toFloat()),FitViewport(uiWidth.toFloat(), uiHeight.toFloat()))
+        }
 
-    public Viewport getUI() {
-        return uiView;
-    }
+        /**
+         * Creates two viewports of the game and ui that match the window size,
+         * defintion of a 'modern' game.
+         */
+        fun createModern(camera: Camera): ViewportContext {
+            return ViewportContext(ScreenViewport(camera),ScreenViewport())
+        }
 
-    public float getWidth() {
-        return view.getWorldWidth();
-    }
-
-    public float getHeight() {
-        return view.getWorldHeight();
-    }
-
-    public float getUIWidth() {
-        return uiView.getWorldHeight();
-    }
-
-    public float getUIHeight() {
-        return uiView.getWorldHeight();
-    }
-
-    public Vector2 getCenter() {
-        return new Vector2(getWidth() * 0.5f, getHeight() * 0.5f);
-    }
-
-    public Vector2 getUICenter() {
-        return new Vector2(getUIWidth() * 0.5f, getUIHeight() * 0.5f);
-    }
-
-    public Camera getCamera() {
-        return view.getCamera();
-    }
-
-    public Camera getUICamera() {
-        return uiView.getCamera();
-    }
-
-    public OrthographicCamera getOrthoCamera() {
-        return (OrthographicCamera) view.getCamera();
-    }
-
-    public OrthographicCamera getUIOrthoCamera() {
-        return (OrthographicCamera) uiView.getCamera();
+        /**
+         * Creates an context storing two viewports of the game and ui.
+         */
+        fun createCustom(view: Viewport, uiView: Viewport): ViewportContext {
+            return ViewportContext(view,uiView)
+        }
     }
 }

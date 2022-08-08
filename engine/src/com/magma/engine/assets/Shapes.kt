@@ -7,19 +7,19 @@ import com.magma.engine.MagmaGame
 import space.earlygrey.shapedrawer.ShapeDrawer
 
 object Shapes : Disposable {
-    private lateinit var drawer: ShapeDrawer
-    private lateinit var instance: SpriteBatch
+    lateinit var instance: ShapeDrawer
+    private lateinit var batch: SpriteBatch
 
     init {
         MagmaGame.disposeOnExit(this)
     }
 
     fun setup(batch: SpriteBatch, pixel: TextureRegion) {
-        this.instance = batch;
-        this.drawer = ShapeDrawer(batch,pixel)
+        this.batch = batch;
+        this.instance = ShapeDrawer(batch,pixel)
     }
 
     override fun dispose() {
-        instance.dispose()
+        batch.dispose()
     }
 }

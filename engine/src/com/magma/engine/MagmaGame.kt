@@ -61,7 +61,9 @@ abstract class MagmaGame(private val assetFolder: String) : Game() {
     }
 
     companion object {
-        private lateinit var instance : MagmaGame
+        lateinit var instance : MagmaGame
+        val assetFolder: String
+            get() = instance.assetFolder
 
 		fun disposeOnExit(disposable: Disposable) {
             if (instance.disposables.contains(disposable, false)) {

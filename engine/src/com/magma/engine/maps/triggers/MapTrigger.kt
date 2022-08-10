@@ -12,6 +12,7 @@ import com.magma.engine.utils.MagmaMath
 abstract class MapTrigger(protected val rect: Rectangle, original: MapObject) : Actor(), Drawable, TriggerListener {
 
     init {
+
         // import the originals properties
         MagmaMath.scaleRectangle(rect, 1f / MapSession.tileSize.x)
         setBounds(rect.x, rect.y, rect.width, rect.height)

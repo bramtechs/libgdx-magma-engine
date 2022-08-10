@@ -1,94 +1,69 @@
 package com.magma.engine.maps
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.maps.tiled.TiledMap
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
+import com.magma.engine.assets.MapLoader
+import com.magma.engine.collision.MapCollisions
 import com.magma.engine.debug.MagmaLogger.log
 import com.magma.engine.debug.modules.MapModuleListener
-import com.magma.engine.maps.MapSession.Companion.tileSize
 import com.magma.engine.maps.triggers.MapTriggerBuilder
+import com.magma.engine.maps.triggers.MapTriggers
 import com.magma.engine.stages.GameStage
 import com.magma.engine.stages.StageSwitchListener
-import com.magma.engine.stages.ViewportContext
 import com.magma.engine.ui.dialog.Dialog
+import java.lang.IllegalStateException
 
-open class MapStage// TODO: add dialog Stack
-    (viewports: ViewportContext, batch: SpriteBatch, private val triggerBuilder: MapTriggerBuilder) : GameStage(
-    viewports,
-    batch
+open class MapStage(batch: SpriteBatch,private val builder: MapTriggerBuilder) : GameStage(
+   batch
 ), StageSwitchListener, MapModuleListener {
-    private var session: MapSession? = null
+    lateinit var renderer: OrthogonalTiledMapRenderer
+    lateinit var collisions: MapCollisions
+    lateinit var triggers: MapTriggers
+    lateinit var map: TiledMap
+    lateinit var tmxName: String
 
     init {
-        val dialog = Dialog(viewports.ui, 300, 120)
-        ui.addActor(dialog)
+        val dialog = Dialog(300, 120)
+        uIStage.addActor(dialog)
     }
+    override fun loadMap(tmxName: String){
+        map = MapLoader.loadTilemap(tmxName)
+        renderer = OrthogonalTiledMapRenderer(map, 1f / tileSize.x)
 
-    fun openSession(session: MapSession) {
-        // close session if already open
-        if (this.session != null) closeSession()
-        log(this, "Starting session...")
-        session.spawnTriggers(triggerBuilder)
-        session.toFront()
-        addActor(session)
-        this.session = session
-    }
-
-    fun closeSession() {
-        log(this, "Closing session...")
-        session!!.toBack()
-        session!!.remove()
-        session!!.dispose()
-        session = null
+        // extract layers
+        val layer = map.layers["Triggers"]
+        if (layer != null) {
+            collisions = MapCollisions(layer)
+            triggers = MapTriggers(this, layer.objects, builder)
+            addActor(triggers)
+        } else {
+            throw IllegalStateException("MapStage: No Triggers layer found!")
+        }
     }
 
     override fun dispose() {
-        if (session != null) {
-            session!!.dispose()
-            session = null
-        }
+        unloadMap()
         super.dispose()
     }
 
-    override fun stageOpened(stage: GameStage) {}
-    override fun stageClosed(stage: GameStage) {
-        if (stage === this) {
-            closeSession()
-        }
-    }
-
     override fun unloadMap() {
-        if (session == null) {
-            log("Map unloading not necessary")
-            return
-        }
-        session!!.dispose()
-        session = null
+        renderer.dispose()
+        map.dispose()
         log(this, "Unloading map...")
     }
-
     override fun setTriggersVisible(on: Boolean) {
-        session!!.setDebug(on, true)
-    }
-
-    override fun requestMap(name: String) {
-        // You should override this
+        isDebugAll = on
     }
 
     override fun toString(): String {
-        if (session != null) {
             var text = """
-                tmx map: ${session!!.tmxName}
-                
+                tmx map: $tmxName
                 """.trimIndent()
             text += """
                 tileSize: $tileSize
                 spawn: 
                 """.trimIndent()
             return text
-        }
-        return " dormant"
-    }
-
-    override fun resize(width: Int, height: Int) {
-        // TODO Auto-generated method stub
     }
 }

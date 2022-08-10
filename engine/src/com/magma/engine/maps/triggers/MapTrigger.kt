@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.magma.engine.collision.TriggerListener
 import com.magma.engine.gfx.Drawable
-import com.magma.engine.maps.MapSession
 import com.magma.engine.maps.MapStage
 import com.magma.engine.utils.MagmaMath
 

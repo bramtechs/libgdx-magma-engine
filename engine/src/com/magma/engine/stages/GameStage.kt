@@ -1,106 +1,74 @@
-package com.magma.engine.stages;
+package com.magma.engine.stages
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.magma.engine.collision.CollisionStage;
-import com.magma.engine.gfx.camera.CameraBehavior;
-import com.magma.engine.gfx.camera.CameraPanBehavior;
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
+import com.badlogic.gdx.graphics.Camera
+import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.PerspectiveCamera
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.scenes.scene2d.Stage
+import com.magma.engine.collision.CollisionStage
+import com.magma.engine.gfx.camera.CameraBehavior
+import com.magma.engine.gfx.camera.CameraPanBehavior
 
 // This abstract type of stage is linked to another stage containing the UI
-public class GameStage extends CollisionStage {
+open class GameStage(batch: SpriteBatch) : CollisionStage(batch) {
+    val uIStage: Stage
 
-    protected final Camera camera;
-    protected final Stage ui;
-    protected final ViewportContext viewports;
+    private var cameraBehavior: CameraBehavior? = null
+    private var cameraBehaviorUI: CameraBehavior? = null
+    private var initialized = false
 
-    private CameraBehavior cameraBehavior;
-    private CameraBehavior cameraBehaviorUI;
-    private boolean initialized;
-
-    public GameStage(ViewportContext viewports, SpriteBatch batch) {
-        super(viewports.get(), batch);
-        this.camera = getCamera();
-        this.viewports = viewports;
-        this.ui = new Stage(viewports.getUi(), batch);
+    init {
+        uIStage = Stage(ViewportContext.ui, batch)
     }
 
-    public void setCameraBehavior(CameraBehavior behavior) {
-        if (cameraBehavior != null) {
-            cameraBehavior.remove();
-        }
-        cameraBehavior = behavior;
-        cameraBehavior.addCamera(this);
-        addActor(cameraBehavior);
+    fun setCameraBehavior(behavior: CameraBehavior) {
+        cameraBehavior?.remove()
+        cameraBehavior = behavior
+        addActor(behavior)
     }
 
-    public void setCameraBehaviorUI(CameraBehavior behavior) {
+    fun setCameraBehaviorUI(behavior: CameraBehavior?) {
         if (cameraBehaviorUI != null) {
-            cameraBehaviorUI.remove();
+            cameraBehaviorUI!!.remove()
         }
-        cameraBehaviorUI = behavior;
-        cameraBehaviorUI.addCamera(ui);
-        ui.addActor(cameraBehaviorUI);
+        cameraBehaviorUI = behavior
+        uIStage.addActor(cameraBehaviorUI)
     }
 
-    public OrthographicCamera getOrthoCamera() {
-        if (!(camera instanceof OrthographicCamera)) {
-            throw new IllegalStateException("Camera is not orthographic!" + camera.getClass().getSimpleName());
+    val orthoCamera: OrthographicCamera
+        get() {
+            check(camera is OrthographicCamera) { "Camera is not orthographic!" + camera.javaClass.simpleName }
+            return camera as OrthographicCamera
         }
-        return (OrthographicCamera) camera;
-    }
-
-    public PerspectiveCamera getPersCamera() {
-        if (!(camera instanceof PerspectiveCamera)) {
-            throw new IllegalStateException("Camera is not perspective! It is " + camera.getClass().getSimpleName());
+    val persCamera: PerspectiveCamera
+        get() {
+            check(camera is PerspectiveCamera) { "Camera is not perspective! It is " + camera.javaClass.simpleName }
+            return camera as PerspectiveCamera
         }
-        return (PerspectiveCamera) camera;
-    }
 
-    /**
-     * Runs one frame after creating the stage, bad practice so avoid!
-     */
-    public void create() {
-    }
-
-    @Override
-    public void act(float delta) {
-        if (!initialized) {
-            initialized = true;
-            create();
+    override fun act(delta: Float) {
+        cameraBehavior?.process(orthoCamera,delta)
+        cameraBehaviorUI?.process(orthoCamera,delta)
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F7)) {
+            setCameraBehaviorUI(CameraPanBehavior())
         }
-        if (Gdx.input.isKeyJustPressed(Keys.F7)) {
-            setCameraBehaviorUI(new CameraPanBehavior());
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F8)) {
+            setCameraBehavior(CameraPanBehavior())
         }
-        if (Gdx.input.isKeyJustPressed(Keys.F8)) {
-            setCameraBehavior(new CameraPanBehavior());
-        }
-        super.act(delta);
-        ui.act(delta);
+        super.act(delta)
+        uIStage.act(delta)
     }
 
-    @Override
-    public void draw() {
-        super.draw();
-        ui.getViewport().apply();
-        ui.draw();
+    override fun draw() {
+        super.draw()
+        uIStage.viewport.apply()
+        uIStage.draw()
     }
 
-    @Override
-    public void dispose() {
-        ui.dispose();
-        super.dispose();
-    }
-
-    public ViewportContext getViewports() {
-        return viewports;
-    }
-
-    public Stage getUIStage() {
-        return ui;
+    override fun dispose() {
+        uIStage.dispose()
+        super.dispose()
     }
 }

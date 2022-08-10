@@ -8,9 +8,8 @@ import com.magma.engine.debug.modules.StageModuleListener
 
 //TODO: Add stage transitions
 object StageSwitcher : Screen, Disposable, StageModuleListener {
-    val listeners: Array<StageSwitchListener> = Array()
-    lateinit var active: GameStage
-
+    private val listeners: Array<StageSwitchListener> = Array()
+    private lateinit var active: GameStage
     init {
         disposeOnExit(this)
     }
@@ -26,12 +25,12 @@ object StageSwitcher : Screen, Disposable, StageModuleListener {
     }
 
     override fun resize(width: Int, height: Int) {
-        active.getViewports().resize(width, height)
+        active.viewports.resize(width, height)
         val ui = active.uiStage
         ui.viewport.update(width, height)
         ui.camera.update(true)
         for (listener in listeners) {
-            listener.resize(width, height)
+            listener.stageResized(width, height)
         }
     }
 
@@ -40,7 +39,7 @@ object StageSwitcher : Screen, Disposable, StageModuleListener {
 
         // make the stage a listener if it has the correct interface
         if (stage is StageSwitchListener) {
-            listeners!!.add(stage as StageSwitchListener)
+            listeners.add(stage as StageSwitchListener)
         }
 
         // notify all the listeners
@@ -49,7 +48,6 @@ object StageSwitcher : Screen, Disposable, StageModuleListener {
         }
     }
 
-    @JvmStatic
     fun addListener(listener: StageSwitchListener) {
         listeners.add(listener)
     }

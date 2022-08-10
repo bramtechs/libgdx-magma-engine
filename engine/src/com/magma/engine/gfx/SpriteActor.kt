@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.*
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.utils.Align
-import com.magma.engine.maps.MapSession
 import com.magma.engine.maps.triggers.CustomTrigger
 
 // TODO this class is confusing and dumb

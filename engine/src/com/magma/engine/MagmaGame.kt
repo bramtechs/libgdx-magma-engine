@@ -11,7 +11,6 @@ import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.ScreenUtils
 import com.magma.engine.debug.MagmaLogger
-import com.magma.engine.saving.SaveFile
 import com.magma.engine.stages.StageSwitcher
 import java.io.File
 

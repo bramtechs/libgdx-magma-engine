@@ -54,11 +54,11 @@ class MapModule : Module("Map details"), StageSwitchListener {
         if (mapStage == null) return
         val count: Int = mapStage!!.triggers.count
         triggerCount.text = format("Trigger count", count)
-        curMap = session.tmxName
+        curMap = mapStage!!.tmxName
         current.text = format("Loaded map", curMap)
         if (chosenMap != null) {
             // load the choosen map on the LWJGL thread
-            mapStage.loadMap(chosenMap)
+            mapStage!!.loadMap(chosenMap!!)
             chosenMap = null
         }
     }

@@ -3,6 +3,7 @@ package com.magma.engine.maps
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
+import com.badlogic.gdx.math.Vector2
 import com.magma.engine.assets.MapLoader
 import com.magma.engine.collision.MapCollisions
 import com.magma.engine.debug.MagmaLogger.log
@@ -65,5 +66,13 @@ open class MapStage(batch: SpriteBatch,private val builder: MapTriggerBuilder) :
                 spawn: 
                 """.trimIndent()
             return text
+    }
+
+    companion object {
+        val tileSize: Vector2
+            get() {
+                // TODO get dynamically maybe
+                return Vector2(16f, 16f)
+            }
     }
 }

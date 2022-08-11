@@ -14,7 +14,7 @@ abstract class MapTrigger(protected val rect: Rectangle, original: MapObject) : 
     init {
 
         // import the originals properties
-        MagmaMath.scaleRectangle(rect, 1f / MapSession.tileSize.x)
+        MagmaMath.scaleRectangle(rect, 1f / MapStage.tileSize.x)
         setBounds(rect.x, rect.y, rect.width, rect.height)
         color = original.color
         isVisible = original.isVisible

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.*
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.utils.Align
+import com.magma.engine.maps.MapStage
 import com.magma.engine.maps.triggers.CustomTrigger
 
 // TODO this class is confusing and dumb
@@ -30,7 +31,7 @@ abstract class SpriteActor(var region: TextureRegion) : Actor(), Drawable, Custo
 
         // resize to world units
         if (AUTO_SCALE) {
-            setScale(1f / MapSession.tileSize.x, 1f / MapSession.tileSize.y)
+            setScale(1f / MapStage.tileSize.x, 1f / MapStage.tileSize.y)
         } else {
             setScale(1f)
         }

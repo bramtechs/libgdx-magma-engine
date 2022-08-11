@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.magma.engine.saving.OsUtil;
+import com.magma.engine.utils.OsUtil;
 import com.magma.engine.utils.Time;
 
 public class MagmaLoggerDesktop extends MagmaLogger {

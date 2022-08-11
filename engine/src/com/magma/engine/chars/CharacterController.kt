@@ -29,7 +29,7 @@ class CharacterController(private val entity: Entity, private val diagonal: Bool
 
     override fun act(delta: Float): Boolean {
         // stop the player from moving when dialog is playing
-        if (Dialog.isSpeaking()) {
+        if (Dialog.isSpeaking) {
             return false
         }
         val sp = entity.stats.speed * delta

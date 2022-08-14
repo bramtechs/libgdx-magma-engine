@@ -2,26 +2,21 @@ package com.magma.engine.stages
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.PerspectiveCamera
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.magma.engine.MagmaGame
 import com.magma.engine.collision.CollisionStage
 import com.magma.engine.gfx.camera.CameraBehavior
 import com.magma.engine.gfx.camera.CameraPanBehavior
 
 // This abstract type of stage is linked to another stage containing the UI
-open class GameStage(batch: SpriteBatch) : CollisionStage(batch) {
-    val uIStage: Stage
+open class GameStage : CollisionStage() {
+    val uiStage: Stage = Stage(ViewportContext.ui, MagmaGame.spriteBatch)
 
     private var cameraBehavior: CameraBehavior? = null
     private var cameraBehaviorUI: CameraBehavior? = null
     private var initialized = false
-
-    init {
-        uIStage = Stage(ViewportContext.ui, batch)
-    }
 
     fun setCameraBehavior(behavior: CameraBehavior) {
         cameraBehavior?.remove()
@@ -34,7 +29,7 @@ open class GameStage(batch: SpriteBatch) : CollisionStage(batch) {
             cameraBehaviorUI!!.remove()
         }
         cameraBehaviorUI = behavior
-        uIStage.addActor(cameraBehaviorUI)
+        uiStage.addActor(cameraBehaviorUI)
     }
 
     val orthoCamera: OrthographicCamera
@@ -58,17 +53,17 @@ open class GameStage(batch: SpriteBatch) : CollisionStage(batch) {
             setCameraBehavior(CameraPanBehavior())
         }
         super.act(delta)
-        uIStage.act(delta)
+        uiStage.act(delta)
     }
 
     override fun draw() {
         super.draw()
-        uIStage.viewport.apply()
-        uIStage.draw()
+        uiStage.viewport.apply()
+        uiStage.draw()
     }
 
     override fun dispose() {
-        uIStage.dispose()
+        uiStage.dispose()
         super.dispose()
     }
 }

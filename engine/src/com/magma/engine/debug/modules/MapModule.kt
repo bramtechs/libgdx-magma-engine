@@ -58,6 +58,7 @@ class MapModule : Module("Map details"), StageSwitchListener {
         current.text = format("Loaded map", curMap)
         if (chosenMap != null) {
             // load the choosen map on the LWJGL thread
+            mapStage!!.unloadMap()
             mapStage!!.loadMap(chosenMap!!)
             chosenMap = null
         }

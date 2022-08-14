@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextArea
 import com.badlogic.gdx.utils.Queue
 import com.magma.engine.assets.MagmaLoader
 import com.magma.engine.assets.Shapes
+import com.magma.engine.debug.MagmaLogger
 import com.magma.engine.stages.ViewportContext
 
 class Dialog(width: Int, height: Int) : Stack() {
@@ -62,6 +63,11 @@ class Dialog(width: Int, height: Int) : Stack() {
     companion object {
         private val messages: Queue<DialogMessage> = Queue()
         private var isLocked = false
+        var locked: Boolean
+            get() = isLocked
+            set(value) {if (value) MagmaLogger.log(this,"Dialog locked") else MagmaLogger.log(this,"Dialog unlocked")field =
+                isLocked = value
+            }
 
         val isSpeaking: Boolean
             get() = messages.isEmpty

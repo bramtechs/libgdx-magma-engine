@@ -2,18 +2,17 @@ package com.magma.engine.spatial
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.*
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g3d.*
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight
 import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder
 import com.badlogic.gdx.utils.Timer
+import com.magma.engine.MagmaGame
 import com.magma.engine.stages.GameStage
 import com.magma.engine.stages.ViewportContext
 
-open class SpatialStage(private val batch: SpriteBatch, protected val modelBatch: ModelBatch) :
-    GameStage(batch) {
+open class SpatialStage : GameStage() {
 	protected val modelBuilder: ModelBuilder = ModelBuilder()
     protected val env: Environment
     private val origin: ModelInstance
@@ -71,10 +70,10 @@ open class SpatialStage(private val batch: SpriteBatch, protected val modelBatch
     override fun draw() {
         Gdx.gl.glViewport(0, 0, Gdx.graphics.width, Gdx.graphics.height)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
-        modelBatch.begin(camera)
-        modelBatch.render(origin, env)
+        MagmaGame.modelBatch.begin(camera)
+        MagmaGame.modelBatch.render(origin, env)
         draw3d()
-        modelBatch.end()
+        MagmaGame.modelBatch.end()
         super.draw()
     }
 }

@@ -15,24 +15,15 @@ import com.magma.engine.stages.StageSwitcher
 import java.io.File
 
 abstract class MagmaGame(private val assetFolder: String) : Game() {
-	protected lateinit var modelBatch: ModelBatch
-    protected lateinit var spriteBatch: SpriteBatch
-    protected lateinit var stageSwitcher: StageSwitcher
-    private val disposables: Array<Disposable> = Array()
 
-    var backgroundColor: Color = Color.BLACK
-
-    init {
-        instance = this
-    }
+    var bgColor: Color = Color.BLACK
 
     override fun create() {
         Gdx.app.logLevel = Application.LOG_INFO
         spriteBatch = SpriteBatch()
         modelBatch = ModelBatch()
         MagmaLogger.log(this, "Executing at path " + File("").absolutePath)
-        MagmaLogger.log(this, "Save files will be saved in " + SaveFile.getPersistentPath())
-        setScreen(stageSwitcher)
+        setScreen(StageSwitcher)
         initStages()
     }
 
@@ -44,7 +35,7 @@ abstract class MagmaGame(private val assetFolder: String) : Game() {
         StageSwitcher.act(delta)
 
         // render all the things
-        ScreenUtils.clear(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a)
+        ScreenUtils.clear(bgColor.r, bgColor.g, bgColor.b, bgColor.a)
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT or GL30.GL_DEPTH_BUFFER_BIT)
         super.render()
     }
@@ -61,12 +52,16 @@ abstract class MagmaGame(private val assetFolder: String) : Game() {
 
     companion object {
         lateinit var instance : MagmaGame
+        lateinit var spriteBatch: SpriteBatch
+        lateinit var modelBatch: ModelBatch
+
+        private val disposables: Array<Disposable> = Array()
         val assetFolder: String
             get() = instance.assetFolder
 
 		fun disposeOnExit(disposable: Disposable) {
-            if (instance.disposables.contains(disposable, false)) {
-                instance.disposables.add(disposable)
+            if (disposables.contains(disposable, false)) {
+                disposables.add(disposable)
             } else {
                 MagmaLogger.log(disposable, "Already marked for disposal ${disposable.javaClass.simpleName}")
             }

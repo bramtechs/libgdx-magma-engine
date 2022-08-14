@@ -56,7 +56,7 @@ open class AnimatedSprite(vararg slots: AnimSlot) : SpriteActor(Sprite(placehold
     override fun act(delta: Float) {
         var time = 0f
         if (!isStopped) {
-            time = Time.getTime()
+            time = Time.time
         }
         val animation = animations[currentAnimation]
         val region = animation?.getKeyFrame(time)

@@ -26,7 +26,7 @@ object StageSwitcher : Screen, Disposable, StageModuleListener {
 
     override fun resize(width: Int, height: Int) {
         ViewportContext.resize(width, height)
-        val ui = active.uIStage
+        val ui = active.uiStage
         ui.viewport.update(width, height)
         ui.camera.update(true)
         for (listener in listeners) {

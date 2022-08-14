@@ -8,10 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Queue
 import com.badlogic.gdx.utils.Timer
 import com.badlogic.gdx.utils.viewport.Viewport
+import com.magma.engine.MagmaGame
 import com.magma.engine.stages.ViewportContext
 import com.magma.engine.utils.MagmaMath
 
-open class CollisionStage(batch: Batch) : Stage(ViewportContext.view,batch) {
+open class CollisionStage : Stage(ViewportContext.view, MagmaGame.spriteBatch) {
     private val senders // a huge set of all the 'Triggerable' annotated actors or actors implementing
             : HashSet<Actor> = HashSet()
 

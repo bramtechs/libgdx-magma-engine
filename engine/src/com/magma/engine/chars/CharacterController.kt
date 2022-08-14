@@ -39,7 +39,7 @@ class CharacterController(private val entity: Entity, private val diagonal: Bool
         for (i in allKeys.indices) {
             // pressing keys
             if (Gdx.input.isKeyJustPressed(allKeys[i])) {
-                pressTimes[i] = Time.getTimeMillis()
+                pressTimes[i] = Time.timeMillis
                 //MagmaLogger.log("Pressed",allKeys[i]);
             }
 

@@ -1,6 +1,5 @@
 package com.magma.engine.maps
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.math.Vector2
@@ -15,21 +14,21 @@ import com.magma.engine.stages.StageSwitchListener
 import com.magma.engine.ui.dialog.Dialog
 import java.lang.IllegalStateException
 
-open class MapStage(batch: SpriteBatch,private val builder: MapTriggerBuilder) : GameStage(
-   batch
-), StageSwitchListener, MapModuleListener {
-    lateinit var renderer: OrthogonalTiledMapRenderer
-    lateinit var collisions: MapCollisions
+open class MapStage(private val builder: MapTriggerBuilder) : GameStage(), StageSwitchListener, MapModuleListener {
     lateinit var triggers: MapTriggers
     lateinit var map: TiledMap
     lateinit var tmxName: String
 
+    private lateinit var renderer: OrthogonalTiledMapRenderer
+    private lateinit var collisions: MapCollisions
+
     init {
         val dialog = Dialog(300, 120)
-        uIStage.addActor(dialog)
+        uiStage.addActor(dialog)
     }
-    override fun loadMap(tmxName: String){
-        map = MapLoader.loadTilemap(tmxName)
+    override fun loadMap(name: String){
+        this.tmxName = name
+        map = MapLoader.loadTilemap(name)
         renderer = OrthogonalTiledMapRenderer(map, 1f / tileSize.x)
 
         // extract layers

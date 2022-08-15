@@ -1,25 +1,27 @@
 package com.magma.engine.assets
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.utils.Disposable
-import com.magma.engine.MagmaGame
+import com.magma.engine.ui.MagmaPixmap
 import space.earlygrey.shapedrawer.ShapeDrawer
+import java.lang.IllegalStateException
 
-object Shapes : Disposable {
-    lateinit var instance: ShapeDrawer
-    private lateinit var batch: SpriteBatch
+object Shapes {
 
-    init {
-        MagmaGame.disposeOnExit(this)
+    val instance: ShapeDrawer
+        get() {
+        if (drawer == null) {
+            throw IllegalStateException("Shape Drawer needs to be initialized first!")
+        }
+        return drawer!!
     }
 
-    fun setup(batch: SpriteBatch, pixel: TextureRegion) {
-        this.batch = batch;
-        this.instance = ShapeDrawer(batch,pixel)
-    }
+    private var drawer: ShapeDrawer? = null
 
-    override fun dispose() {
-        batch.dispose()
+    fun setup(batch: SpriteBatch) {
+        val pixel = MagmaPixmap.createColoredRect(1,1, Color.WHITE)
+        val region = pixel.bakeRegion()
+        this.drawer = ShapeDrawer(batch,region)
     }
 }

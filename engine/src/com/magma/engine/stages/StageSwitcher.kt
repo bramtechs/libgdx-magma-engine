@@ -9,26 +9,28 @@ import com.magma.engine.debug.modules.StageModuleListener
 //TODO: Add stage transitions
 object StageSwitcher : Screen, Disposable, StageModuleListener {
     private val listeners: Array<StageSwitchListener> = Array()
-    private lateinit var active: GameStage
+    private var active: GameStage? = null
     init {
         disposeOnExit(this)
     }
 
     override fun render(delta: Float) {
-        active.viewport.apply()
-        active.draw()
+        active?.viewport?.apply()
+        active?.draw()
     }
 
     override fun dispose() {
-        active.dispose()
+        active?.dispose()
         listeners.clear()
     }
 
     override fun resize(width: Int, height: Int) {
         ViewportContext.resize(width, height)
-        val ui = active.uiStage
-        ui.viewport.update(width, height)
-        ui.camera.update(true)
+        val ui = active?.uiStage
+        if (ui != null) {
+            ui.viewport.update(width, height)
+            ui.camera.update(true)
+        }
         for (listener in listeners) {
             listener.stageResized(width, height)
         }
@@ -53,7 +55,7 @@ object StageSwitcher : Screen, Disposable, StageModuleListener {
     }
 
     fun act(delta: Float) {
-        active.act(delta)
+        active?.act(delta)
     }
 
     override fun pause() {}

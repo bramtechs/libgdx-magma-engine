@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Shape2D
 import com.magma.engine.collision.Triggered
+import com.magma.engine.debug.MagmaLogger
 import com.magma.engine.entities.Entity
 import com.magma.engine.entities.EntityComponent
 import com.magma.engine.gfx.AnimSlot
@@ -34,7 +35,7 @@ abstract class Character(
         direction = Direction.Up
     }
 
-    fun collisionPush(outOf: Rectangle?) {
+    fun collisionPush(outOf: Rectangle) {
         if (lastIntersect == null) {
             lastIntersect = Rectangle()
         }
@@ -48,23 +49,11 @@ abstract class Character(
 
         // stop the current animation
         stop()
-        var moveX = 0f
-        var moveY = 0f
-        when (direction) {
-            Direction.Down -> moveY = -lastIntersect!!.height
-            Direction.Left -> moveX = lastIntersect!!.width
-            Direction.Right -> moveX =
-                -lastIntersect!!.width - 0.01f // prevent launching bugs for some reason aka speedrun glitch
-            Direction.Up -> moveY = lastIntersect!!.height
-            else -> throw IllegalArgumentException("Direction not programmed")
-        }
+        // TODO calculate simple direction between two shapes and push that way
 
-        // make launch bugs look less ridiculous, if they would occur
-        moveX = MathUtils.clamp(-5f, moveX, 5f)
-        moveY = MathUtils.clamp(-5f, moveY, 5f)
+        val moveX = 0f
+        val moveY = 0f
 
-        // offset to new position
-        // dont use setPosition()!
         x += moveX
         y += moveY
     }
@@ -99,8 +88,7 @@ abstract class Character(
 
     override val shape : Shape2D
         get() {
-            val feetSize = region.regionWidth * 0.8f
-            val height = region.regionHeight * 0.5f
-            return Rectangle(x - feetSize * 0.5f, y - height, feetSize, feetSize)
+            val size = 1f
+            return Rectangle(centerX-size*0.5f, centerY-size*0.5f-0.7f, size, size)
         }
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Intersector
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Shape2D
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.magma.engine.maps.MapStage
 import com.magma.engine.maps.triggers.CustomTrigger
 
 object MagmaMath {

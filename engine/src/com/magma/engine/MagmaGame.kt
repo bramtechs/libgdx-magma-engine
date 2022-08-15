@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.ScreenUtils
+import com.magma.engine.assets.MagmaLoader
+import com.magma.engine.assets.Shapes
+import com.magma.engine.debug.Debugger
 import com.magma.engine.debug.MagmaLogger
 import com.magma.engine.stages.StageSwitcher
 import java.io.File
@@ -19,14 +22,19 @@ abstract class MagmaGame(private val assetFolder: String) : Game() {
     var bgColor: Color = Color.BLACK
 
     override fun create() {
-        Gdx.app.logLevel = Application.LOG_INFO
+        instance = this
         spriteBatch = SpriteBatch()
         modelBatch = ModelBatch()
+
+        Gdx.app.logLevel = Application.LOG_INFO
+        Shapes.setup(spriteBatch)
+        initViewports()
         MagmaLogger.log(this, "Executing at path " + File("").absolutePath)
         setScreen(StageSwitcher)
         initStages()
     }
 
+    protected abstract fun initViewports()
     protected abstract fun initStages()
 
     override fun render() {
@@ -48,6 +56,7 @@ abstract class MagmaGame(private val assetFolder: String) : Game() {
         }
         spriteBatch.dispose()
         modelBatch.dispose()
+        Debugger.dispose()
     }
 
     companion object {

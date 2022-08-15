@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.magma.engine.assets.MagmaLoader
-import com.magma.engine.ui.MagmaGfx.getColoredDrawable
 
 class RetroHealthBar(size: GridPoint2, min: Float, max: Float, palette: Palette) :
     ProgressBar(min, max, 0.01f, false, ProgressBarStyle()) {
@@ -29,9 +28,9 @@ class RetroHealthBar(size: GridPoint2, min: Float, max: Float, palette: Palette)
     private fun applyGraphics() {
         val WIDTH = size.x
         val HEIGHT = size.y
-        style.background = getColoredDrawable(WIDTH, HEIGHT, colors.bgColor)
-        style.knob = getColoredDrawable(WIDTH, HEIGHT, colors.fgColor)
-        style.knobBefore = getColoredDrawable(WIDTH, HEIGHT, colors.fgColor)
+        style.background = MagmaPixmap.createColoredRect(WIDTH, HEIGHT, colors.bgColor).bakeDrawable()
+        style.knob = MagmaPixmap.createColoredRect(WIDTH, HEIGHT, colors.fgColor).bakeDrawable()
+        style.knobBefore = MagmaPixmap.createColoredRect(WIDTH, HEIGHT, colors.fgColor).bakeDrawable()
         setAnimateDuration(0.0f)
         value = 1f
         setAnimateDuration(0.25f)

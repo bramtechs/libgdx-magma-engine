@@ -6,7 +6,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
 import com.magma.engine.debug.Crasher
 
 abstract class MagmaLauncher {
-    fun launch(config: Lwjgl3ApplicationConfiguration?, args: Array<String>) {
+    fun launch(config: Lwjgl3ApplicationConfiguration, args: Array<String>) {
         var handleCrashes = true
         for (arg in args) {
             if (arg.contains("--nocrash")) {

@@ -41,10 +41,10 @@ object Debugger : JFrame("Debugger"), Disposable {
         // adds menu bar to the frame
         jMenuBar = menuBar
 
-        // generate modules
-        addModule(InfoModule())
-        addModule(MapModule())
-        addModule(StageModule())
+        // TODO generate modules
+        //addModule(InfoModule())
+        //addModule(MapModule())
+        //addModule(StageModule())
         pack()
     }
 

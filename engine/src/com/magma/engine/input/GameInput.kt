@@ -2,8 +2,8 @@ package com.magma.engine.input
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.utils.Json
+import com.magma.engine.ui.MagmaPixmap
 
 object GameInput {
     private val keys: HashMap<String, Int> = HashMap()
@@ -13,10 +13,9 @@ object GameInput {
 
     init {
         // get rid of the cursor, kinda complicated
-        val nothing = Pixmap(4, 4, Pixmap.Format.RGBA8888)
-        nothing.setColor(Color.WHITE)
-        nothing.drawRectangle(0, 0, 4, 4)
-        val cursor = Gdx.graphics.newCursor(nothing, 0, 0)
+        val nothing = MagmaPixmap.createTransparentRect(4,4)
+        nothing.addBorder(Color.WHITE)
+        val cursor = Gdx.graphics.newCursor(nothing.pixmap, 0, 0)
         Gdx.graphics.setCursor(cursor)
         nothing.dispose()
     }
@@ -45,11 +44,12 @@ object GameInput {
 
     fun registerKey(name: String, defaultKey: Int): Int {
         if (keys.containsKey(name)) {
-            Gdx.app.log("GameInput", "Registered key $defaultKey with name $name")
-            keys[name] = defaultKey
-            flush()
+           return keys[name]!!
         }
-        return keys[name]!!
+        Gdx.app.log("GameInput", "Registered key $defaultKey with name $name")
+        keys[name] = defaultKey
+        flush()
+        return defaultKey
     }
 
     fun reset() { // TODO

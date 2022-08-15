@@ -16,8 +16,8 @@ class Dialog(width: Int, height: Int) : Stack() {
     private val text: TextArea = TextArea("_", MagmaLoader.debugSkin)
 
     init {
-        x = (ViewportContext.width - width) * 0.5f
-        y = -ViewportContext.width + 10
+        x = ViewportContext.uiWidth * 0.5f - width * 0.25f
+        y = 10f
         setSize(width.toFloat(), height.toFloat())
         Gdx.app.log(
             "Dialog",
@@ -47,8 +47,8 @@ class Dialog(width: Int, height: Int) : Stack() {
             return
         }
         val message = messages.first()
-        val shapes = Shapes.instance
         if (message.style == DialogStyle.Basic) {
+            val shapes = Shapes.instance
             shapes.setColor(Color.BLACK)
             shapes.filledRectangle(x, y, width, height)
             shapes.setColor(Color.WHITE)
@@ -65,12 +65,14 @@ class Dialog(width: Int, height: Int) : Stack() {
         private var isLocked = false
         var locked: Boolean
             get() = isLocked
-            set(value) {if (value) MagmaLogger.log(this,"Dialog locked") else MagmaLogger.log(this,"Dialog unlocked")field =
+            set(value) {
+                val msg = if (value) "Dialog locked" else "Dialog unlocked"
+                MagmaLogger.log(this,msg)
                 isLocked = value
             }
 
         val isSpeaking: Boolean
-            get() = messages.isEmpty
+            get() = !messages.isEmpty
 
         fun speak(message: DialogMessage) {
             Gdx.app.log(">", message.message)

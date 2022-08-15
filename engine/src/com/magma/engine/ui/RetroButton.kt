@@ -4,13 +4,14 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.magma.engine.assets.MagmaLoader.debugSkin
-import com.magma.engine.assets.Shapes.instance
+import com.magma.engine.assets.Shapes
 import com.magma.engine.utils.Time
 import space.earlygrey.shapedrawer.ShapeDrawer
+import kotlin.math.sin
 
-class RetroButton(text: String) : Label(text, debugSkin) {
+open class RetroButton(text: String) : Label(text, debugSkin) {
 
-    private val shapes: ShapeDrawer = instance
+    private val shapes: ShapeDrawer = Shapes.instance
     private var selectTime = 0f
 
     // arrow vertices
@@ -38,7 +39,7 @@ class RetroButton(text: String) : Label(text, debugSkin) {
         var offset = OFFSET_X + 10 * 12 // TODO: fix
         // animate that boi
         val dtime = Time.time - selectTime
-        offset += (Math.sin((dtime * ANIM_SPEED).toDouble()) * ANIM_D).toFloat()
+        offset += (sin((dtime * ANIM_SPEED).toDouble()) * ANIM_D).toFloat()
         vertexTop[centerX - offset - SIZE] = centerY + SIZE * 0.5f
         vertexBot[centerX - offset - SIZE] = centerY - SIZE * 0.5f
         vertexRight[centerX - offset] = centerY

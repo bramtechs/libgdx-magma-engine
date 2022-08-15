@@ -14,22 +14,26 @@ import com.magma.engine.stages.StageSwitchListener
 import com.magma.engine.ui.dialog.Dialog
 import java.lang.IllegalStateException
 
-open class MapStage(private val builder: MapTriggerBuilder) : GameStage(), StageSwitchListener, MapModuleListener {
+class MapStage(private val builder: MapTriggerBuilder, private val addActors: (stage: MapStage) -> Unit) : GameStage(), StageSwitchListener, MapModuleListener {
     lateinit var triggers: MapTriggers
     lateinit var map: TiledMap
     lateinit var tmxName: String
 
-    private lateinit var renderer: OrthogonalTiledMapRenderer
-    private lateinit var collisions: MapCollisions
+    private var renderer: OrthogonalTiledMapActor? = null
+    private var collisions: MapCollisions? = null
 
     init {
         val dialog = Dialog(300, 120)
         uiStage.addActor(dialog)
+        dialog.toFront()
+        //isDebugAll = true
     }
+
     override fun loadMap(name: String){
         this.tmxName = name
         map = MapLoader.loadTilemap(name)
-        renderer = OrthogonalTiledMapRenderer(map, 1f / tileSize.x)
+        renderer = OrthogonalTiledMapActor((OrthogonalTiledMapRenderer(map, 1f / tileSize.x)))
+        addActor(renderer!!)
 
         // extract layers
         val layer = map.layers["Triggers"]
@@ -40,6 +44,7 @@ open class MapStage(private val builder: MapTriggerBuilder) : GameStage(), Stage
         } else {
             throw IllegalStateException("MapStage: No Triggers layer found!")
         }
+        addActors.invoke(this)
     }
 
     override fun dispose() {
@@ -48,7 +53,7 @@ open class MapStage(private val builder: MapTriggerBuilder) : GameStage(), Stage
     }
 
     override fun unloadMap() {
-        renderer.dispose()
+        renderer?.dispose()
         map.dispose()
         log(this, "Unloading map...")
     }
@@ -72,6 +77,11 @@ open class MapStage(private val builder: MapTriggerBuilder) : GameStage(), Stage
             get() {
                 // TODO get dynamically maybe
                 return Vector2(16f, 16f)
+            }
+        val scaleFactor: Vector2
+            get() {
+                // TODO get dynamically maybe
+                return Vector2(1f/ tileSize.x, 1f/ tileSize.y)
             }
     }
 }

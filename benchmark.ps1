@@ -1,0 +1,1 @@
+Measure-Command { ./gradlew clean; ./gradlew build }

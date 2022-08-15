@@ -29,7 +29,7 @@ class CharacterController(private val entity: Entity, private val diagonal: Bool
 
     override fun act(delta: Float): Boolean {
         // stop the player from moving when dialog is playing
-        if (Dialog.isSpeaking()) {
+        if (Dialog.isSpeaking) {
             return false
         }
         val sp = entity.stats.speed * delta
@@ -39,7 +39,7 @@ class CharacterController(private val entity: Entity, private val diagonal: Bool
         for (i in allKeys.indices) {
             // pressing keys
             if (Gdx.input.isKeyJustPressed(allKeys[i])) {
-                pressTimes[i] = Time.getTimeMillis()
+                pressTimes[i] = Time.timeMillis
                 //MagmaLogger.log("Pressed",allKeys[i]);
             }
 

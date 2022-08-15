@@ -8,9 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Queue
 import com.badlogic.gdx.utils.Timer
 import com.badlogic.gdx.utils.viewport.Viewport
+import com.magma.engine.MagmaGame
+import com.magma.engine.stages.ViewportContext
 import com.magma.engine.utils.MagmaMath
 
-open class CollisionStage(viewport: Viewport, batch: Batch) : Stage(viewport, batch) {
+open class CollisionStage : Stage(ViewportContext.view, MagmaGame.spriteBatch) {
     private val senders // a huge set of all the 'Triggerable' annotated actors or actors implementing
             : HashSet<Actor> = HashSet()
 
@@ -71,7 +73,7 @@ open class CollisionStage(viewport: Viewport, batch: Batch) : Stage(viewport, ba
         super.addActor(actor)
     }
 
-    fun registerActor(actor: Actor?) {
+    fun registerActor(actor: Actor) {
         if (actor is Triggered) {
             senders.add(actor)
         } else if (actor is TriggerListener) {
@@ -82,10 +84,6 @@ open class CollisionStage(viewport: Viewport, batch: Batch) : Stage(viewport, ba
     fun unregisterActor(actor: Actor) {
         senders.remove(actor)
         receivers.remove(actor)
-    }
-
-    fun enablePrint() {
-        printDebug = true
     }
 
     override fun toString(): String {

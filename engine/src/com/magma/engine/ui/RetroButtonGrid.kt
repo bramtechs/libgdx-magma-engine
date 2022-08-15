@@ -63,7 +63,7 @@ abstract class RetroButtonGrid(vararg options: String) : Table() {
         set(value) {
             selectedIndex = MathUtils.clamp(value, 0, buttons.size - 1)
             deselectAll()
-            buttons[value].select()
+            buttons[selectedIndex].select()
         }
 
 

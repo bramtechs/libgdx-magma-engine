@@ -8,30 +8,31 @@ import com.magma.engine.debug.modules.StageModuleListener
 
 //TODO: Add stage transitions
 object StageSwitcher : Screen, Disposable, StageModuleListener {
-    val listeners: Array<StageSwitchListener> = Array()
-    lateinit var active: GameStage
-
+    private val listeners: Array<StageSwitchListener> = Array()
+    private var active: GameStage? = null
     init {
         disposeOnExit(this)
     }
 
     override fun render(delta: Float) {
-        active.viewport.apply()
-        active.draw()
+        active?.viewport?.apply()
+        active?.draw()
     }
 
     override fun dispose() {
-        active.dispose()
+        active?.dispose()
         listeners.clear()
     }
 
     override fun resize(width: Int, height: Int) {
-        active.getViewports().resize(width, height)
-        val ui = active.uiStage
-        ui.viewport.update(width, height)
-        ui.camera.update(true)
+        ViewportContext.resize(width, height)
+        val ui = active?.uiStage
+        if (ui != null) {
+            ui.viewport.update(width, height)
+            ui.camera.update(true)
+        }
         for (listener in listeners) {
-            listener.resize(width, height)
+            listener.stageResized(width, height)
         }
     }
 
@@ -40,7 +41,7 @@ object StageSwitcher : Screen, Disposable, StageModuleListener {
 
         // make the stage a listener if it has the correct interface
         if (stage is StageSwitchListener) {
-            listeners!!.add(stage as StageSwitchListener)
+            listeners.add(stage as StageSwitchListener)
         }
 
         // notify all the listeners
@@ -49,13 +50,12 @@ object StageSwitcher : Screen, Disposable, StageModuleListener {
         }
     }
 
-    @JvmStatic
     fun addListener(listener: StageSwitchListener) {
         listeners.add(listener)
     }
 
     fun act(delta: Float) {
-        active.act(delta)
+        active?.act(delta)
     }
 
     override fun pause() {}

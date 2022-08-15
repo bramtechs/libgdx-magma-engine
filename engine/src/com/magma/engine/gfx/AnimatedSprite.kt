@@ -4,8 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion
-import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.math.Shape2D
 import com.magma.engine.assets.MagmaLoader.getAtlasRegions
 import com.magma.engine.assets.MagmaLoader.placeholderTexture
 import com.magma.engine.utils.Time
@@ -14,7 +12,6 @@ open class AnimatedSprite(vararg slots: AnimSlot) : SpriteActor(Sprite(placehold
     private val animations: HashMap<Int, Animation<AtlasRegion>> = HashMap()
     private var currentAnimation = 0
     private var isStopped = false
-    private val rectShape = Rectangle()
 
     init {
         for (slot in slots) {
@@ -31,21 +28,21 @@ open class AnimatedSprite(vararg slots: AnimSlot) : SpriteActor(Sprite(placehold
     }
 
     // TODO: Add more control
-    fun setPlayMode(mode: PlayMode?): AnimatedSprite {
+    fun setPlayMode(mode: PlayMode): AnimatedSprite {
         for (anim in animations.values) {
             anim.playMode = mode
         }
         return this
     }
 
-    fun setPlayMode(mode: PlayMode?, slot: AnimSlot): AnimatedSprite {
-        require(animations.containsKey(slot.index)) { "Cannot get animation of index " + slot.index + " (" + slot.name + ")" }
+    fun setPlayMode(mode: PlayMode, slot: AnimSlot): AnimatedSprite {
+        require(animations.containsKey(slot.index)) { "Cannot get animation of index ${slot.index} (${slot.name})" }
         animations[slot.index]!!.playMode = mode
         return this
     }
 
     fun getPlayMode(slot: AnimSlot): PlayMode {
-        require(animations.containsKey(slot.index)) { "Cannot get animation of index " + slot.index + " (" + slot.name + ")" }
+        require(animations.containsKey(slot.index)) { "Cannot get animation of index ${slot.index} (${slot.name})" }
         return animations[slot.index]!!.playMode
     }
 
@@ -56,11 +53,11 @@ open class AnimatedSprite(vararg slots: AnimSlot) : SpriteActor(Sprite(placehold
     override fun act(delta: Float) {
         var time = 0f
         if (!isStopped) {
-            time = Time.getTime()
+            time = Time.time
         }
         val animation = animations[currentAnimation]
         val region = animation?.getKeyFrame(time)
-        checkNotNull(animation) { "No animation set for " + javaClass.simpleName }
+        checkNotNull(animation) { "No animation set for ${javaClass.simpleName}" }
 
         // setRegion removes sprites flip, so we need to do this terribleness
         val origFlipX = isFlipX
@@ -68,10 +65,6 @@ open class AnimatedSprite(vararg slots: AnimSlot) : SpriteActor(Sprite(placehold
         setSpriteRegion(region!!)
         setFlip(origFlipX, origFlipY)
 
-        rectShape.set(x,y,width, height)
         super.act(delta)
     }
-
-    override val shape: Shape2D
-        get() = rectShape
 }

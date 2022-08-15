@@ -10,33 +10,31 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.ScreenUtils
+import com.magma.engine.assets.MagmaLoader
+import com.magma.engine.assets.Shapes
+import com.magma.engine.debug.Debugger
 import com.magma.engine.debug.MagmaLogger
-import com.magma.engine.saving.SaveFile
 import com.magma.engine.stages.StageSwitcher
 import java.io.File
 
 abstract class MagmaGame(private val assetFolder: String) : Game() {
-	protected lateinit var modelBatch: ModelBatch
-    protected lateinit var spriteBatch: SpriteBatch
-    protected lateinit var stageSwitcher: StageSwitcher
-    private val disposables: Array<Disposable> = Array()
 
-    var backgroundColor: Color = Color.BLACK
-
-    init {
-        instance = this
-    }
+    var bgColor: Color = Color.BLACK
 
     override fun create() {
-        Gdx.app.logLevel = Application.LOG_INFO
+        instance = this
         spriteBatch = SpriteBatch()
         modelBatch = ModelBatch()
+
+        Gdx.app.logLevel = Application.LOG_INFO
+        Shapes.setup(spriteBatch)
+        initViewports()
         MagmaLogger.log(this, "Executing at path " + File("").absolutePath)
-        MagmaLogger.log(this, "Save files will be saved in " + SaveFile.getPersistentPath())
-        setScreen(stageSwitcher)
+        setScreen(StageSwitcher)
         initStages()
     }
 
+    protected abstract fun initViewports()
     protected abstract fun initStages()
 
     override fun render() {
@@ -45,7 +43,7 @@ abstract class MagmaGame(private val assetFolder: String) : Game() {
         StageSwitcher.act(delta)
 
         // render all the things
-        ScreenUtils.clear(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a)
+        ScreenUtils.clear(bgColor.r, bgColor.g, bgColor.b, bgColor.a)
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT or GL30.GL_DEPTH_BUFFER_BIT)
         super.render()
     }
@@ -58,16 +56,21 @@ abstract class MagmaGame(private val assetFolder: String) : Game() {
         }
         spriteBatch.dispose()
         modelBatch.dispose()
+        Debugger.dispose()
     }
 
     companion object {
         lateinit var instance : MagmaGame
+        lateinit var spriteBatch: SpriteBatch
+        lateinit var modelBatch: ModelBatch
+
+        private val disposables: Array<Disposable> = Array()
         val assetFolder: String
             get() = instance.assetFolder
 
 		fun disposeOnExit(disposable: Disposable) {
-            if (instance.disposables.contains(disposable, false)) {
-                instance.disposables.add(disposable)
+            if (disposables.contains(disposable, false)) {
+                disposables.add(disposable)
             } else {
                 MagmaLogger.log(disposable, "Already marked for disposal ${disposable.javaClass.simpleName}")
             }

@@ -1,10 +1,12 @@
 package com.magma.engine.debug
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.files.FileHandle
+import com.magma.engine.utils.OsUtil
 import com.magma.engine.utils.Time
 
 object MagmaLogger {
-    var htmlLog: String = ""
+    private var htmlLog: String = ""
 
     enum class Level {
         DEBUG, INFO, WARN, ERROR, BREAKPOINT
@@ -31,7 +33,7 @@ object MagmaLogger {
 
     fun log(sender: Any, message: Any, level: Level? = Level.INFO) {
         val suffix = if (sender is String) sender.toString() else sender.javaClass.simpleName
-        val time = Time.getTime().toString()
+        val time = Time.time.toString()
         val prefix = "(" + time + "s) "
         val name = prefix + suffix
 
@@ -86,5 +88,29 @@ object MagmaLogger {
         val message = "BREAKPOINT"
         log(sender, message, Level.BREAKPOINT)
         throw IllegalStateException("")
+    }
+
+    fun flush(crashed: Boolean = false): String {
+        val file = OsUtil.getUserDataDirectory("SpaceGame")
+
+        // append end text
+        htmlLog += "<hr/>"
+        log("", "State: " + if (crashed) "FAILED" else "SUCCEEDED")
+        htmlLog += "</p>"
+
+        // print to a file
+        var handle = FileHandle("$file/logs/")
+        handle.mkdirs()
+        val name: String = if (crashed) {
+            "crash_" + Time.startTime + ".html"
+        } else {
+            "latest.html"
+        }
+        handle = handle.child(name)
+        val path = handle.file().absolutePath
+        log("MagmaLogger", "Log file saved to: $path")
+        handle.writeString(htmlLog, false)
+        Gdx.app.log("MagmaLogger", "Log saved to $path")
+        return path
     }
 }

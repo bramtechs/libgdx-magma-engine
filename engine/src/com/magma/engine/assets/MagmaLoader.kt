@@ -8,7 +8,9 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Array
+import com.badlogic.gdx.utils.GdxRuntimeException
 import com.magma.engine.MagmaGame
+import com.magma.engine.debug.MagmaLogger
 
 object MagmaLoader : AssetManager() {
 
@@ -23,11 +25,20 @@ object MagmaLoader : AssetManager() {
         if (!engine) {
             name = MagmaGame.assetFolder + fileName
         }
-        if (isLoaded(name)) {
+        if (!isLoaded(name)) {
             load(name, type)
             finishLoadingAsset<Any>(name) // hang game until loaded
         }
-        return get(name)
+        try {
+            return get(name)
+        }catch(e: GdxRuntimeException){
+            var msg = "Assets found at this path\n"
+            for (file in Gdx.files.internal(name).parent().list()){
+                msg += file.path() + "\n"
+            }
+            MagmaLogger.log(this,msg,MagmaLogger.Level.WARN);
+            throw e
+        }
     }
 
     fun <T> request(fileName: String, type: Class<T>): T {
@@ -37,7 +48,7 @@ object MagmaLoader : AssetManager() {
     fun loadAtlas(vararg atlasNames: String) {
         for (name in atlasNames) {
             var convertedName = name
-            if (name.endsWith(".atlas")) {
+            if (!name.endsWith(".atlas")) {
                 convertedName += ".atlas"
             }
             val atlas = request(convertedName, TextureAtlas::class.java)
@@ -78,7 +89,6 @@ object MagmaLoader : AssetManager() {
         return null
     }
 
-    @JvmStatic
     val atlasRegions: Array<AtlasRegion>
         get() {
             val atlases = Array<TextureAtlas>()
@@ -90,7 +100,6 @@ object MagmaLoader : AssetManager() {
             return regions
         }
 
-    @JvmStatic
     val allMapNames: ArrayList<String>
         get() {
             val list = ArrayList<String>()

@@ -19,7 +19,7 @@ This library is aimed at removing a lot of boilerplate, so you can write games i
 - Camera Behaviors (Freecam, follow)
 - WIP: Overwritable keybindings 
 - WIP: Save files
-- Windows, Linux and HTML support *(and probably MacOS)*
+- Windows, Linux and ~~HTML~~*(DEPRECATED)* support *(and probably macOS)*
 
 ## Games made
 - [Lucky Platformer](https://brambasiel.itch.io/lucky-platformer)

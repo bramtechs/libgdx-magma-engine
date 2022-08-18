@@ -2,19 +2,14 @@ package com.magma.engine.debug
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Disposable
 import com.magma.engine.MagmaGame
-import com.magma.engine.debug.MagmaLogger.log
-import com.magma.engine.debug.modules.InfoModule
-import com.magma.engine.debug.modules.MapModule
 import com.magma.engine.debug.modules.Module
-import com.magma.engine.debug.modules.StageModule
 import java.awt.Dimension
+import java.lang.IllegalStateException
 import javax.swing.*
 
-object Debugger : JFrame("Debugger"), Disposable {
-    private val modules: Array<Module> = Array()
+class Debugger private constructor(): JFrame("Debugger"), Disposable {
 
     init {
         // prevents the game from hanging when closing, due to the frame still being
@@ -41,42 +36,55 @@ object Debugger : JFrame("Debugger"), Disposable {
         // adds menu bar to the frame
         jMenuBar = menuBar
 
-        // TODO generate modules
-        //addModule(InfoModule())
-        //addModule(MapModule())
-        //addModule(StageModule())
         pack()
     }
 
     override fun dispose() {
         super.dispose()
-        log(this, "Debugger disposed")
+        MagmaLogger.log(this, "Debugger disposed")
     }
 
-        fun addModule(module: Module) {
-            modules.add(module)
-            contentPane.add(module)
-            pack()
+    companion object {
+        private val modules: HashMap<Any,Module> = HashMap()
+        private var instance: Debugger? = null
+
+        var enabled: Boolean = false
+            set(value) {
+                field = value
+                MagmaLogger.log(this,"Debug mode is "+if (field) "on" else "off")
+            }
+
+        fun addModule(owner: Any,module: Module) {
+            if (!enabled) return
+
+            if (instance == null){
+                // lazy init the debugger
+                instance = Debugger()
+            }
+
+            val prev = modules.put(owner,module)
+            if (prev != null) throw IllegalStateException("Duplicate module types")
+
+            instance!!.contentPane?.add(module)
+            instance!!.pack()
+        }
+
+        fun removeOwnedModule(owner: Any){
+            modules.remove(owner)
         }
 
         fun update() {
             if (Gdx.input.isKeyJustPressed(Input.Keys.F3)) {
-                isVisible = !isVisible
+                if (enabled && instance == null){
+                    instance = Debugger()
+                }
+                instance?.isVisible = !instance!!.isVisible
             }
-            if (isVisible) {
-                for (module in modules) {
+            if (instance != null && instance!!.isVisible) {
+                for (module in modules.values) {
                     module.update()
                 }
             }
         }
-
-        fun <T : Module> getModule(type: Class<T>): Module {
-            for (mod in modules) {
-                log(type)
-                if (mod.javaClass == type) {
-                    return mod
-                }
-            }
-            throw NullPointerException("Cannot find module $type")
-        }
+    }
 }

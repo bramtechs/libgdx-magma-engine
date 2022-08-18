@@ -11,7 +11,7 @@ import javax.swing.JComboBox
 import javax.swing.JLabel
 
 // TODO make for every new MapStage
-class MapModule : Module("Map details"), StageSwitchListener {
+class MapModule(private val mapStage: MapStage) : Module("Map details") {
     private val current: JLabel = JLabel()
     private val triggerCount: JLabel = JLabel()
     private val trigger: JCheckBox = JCheckBox("Show trigger outlines")
@@ -19,13 +19,12 @@ class MapModule : Module("Map details"), StageSwitchListener {
     private val comboBox: JComboBox<String>
 
     private var chosenMap : String? = null // must be deferred
-    private var mapStage: MapStage? = null
 
     init {
         // instantiate the widgets
         trigger.addActionListener {
             val on = trigger.isSelected
-            mapStage?.setTriggersVisible(on)
+            mapStage.setTriggersVisible(on)
         }
 
         // load map list
@@ -51,28 +50,17 @@ class MapModule : Module("Map details"), StageSwitchListener {
     override fun update() {
         var curMap = "None loaded"
         current.text = format("Loaded map", curMap)
-        if (mapStage == null) return
-        val count: Int = mapStage!!.triggers.count
+
+        val count: Int = mapStage.triggers.count
         triggerCount.text = format("Trigger count", count)
-        curMap = mapStage!!.tmxName
+        curMap = mapStage.tmxName
         current.text = format("Loaded map", curMap)
+
         if (chosenMap != null) {
             // load the choosen map on the LWJGL thread
-            mapStage!!.unloadMap()
-            mapStage!!.loadMap(chosenMap!!)
+            mapStage.unloadMap()
+            mapStage.loadMap(chosenMap!!)
             chosenMap = null
-        }
-    }
-
-    override fun stageOpened(stage: GameStage) {
-        if (stage is MapStage) {
-            mapStage = stage
-        }
-    }
-
-    override fun stageClosed(stage: GameStage) {
-        if (stage === mapStage) {
-            mapStage = null
         }
     }
 }

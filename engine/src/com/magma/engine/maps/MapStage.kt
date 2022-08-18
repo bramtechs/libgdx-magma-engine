@@ -5,7 +5,9 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.math.Vector2
 import com.magma.engine.assets.MapLoader
 import com.magma.engine.collision.MapCollisions
+import com.magma.engine.debug.Debugger
 import com.magma.engine.debug.MagmaLogger.log
+import com.magma.engine.debug.modules.MapModule
 import com.magma.engine.debug.modules.MapModuleListener
 import com.magma.engine.maps.triggers.MapTriggerBuilder
 import com.magma.engine.maps.triggers.MapTriggers
@@ -26,13 +28,15 @@ class MapStage(private val builder: MapTriggerBuilder, private val addActors: (s
         val dialog = Dialog(300, 120)
         uiStage.addActor(dialog)
         dialog.toFront()
-        //isDebugAll = true
+
+        Debugger.addModule(this,MapModule(this))
     }
 
     override fun loadMap(name: String){
         this.tmxName = name
         map = MapLoader.loadTilemap(name)
         renderer = OrthogonalTiledMapActor((OrthogonalTiledMapRenderer(map, 1f / tileSize.x)))
+        renderer!!.toBack()
         addActor(renderer!!)
 
         // extract layers
@@ -49,6 +53,7 @@ class MapStage(private val builder: MapTriggerBuilder, private val addActors: (s
 
     override fun dispose() {
         unloadMap()
+        Debugger.removeOwnedModule(this)
         super.dispose()
     }
 

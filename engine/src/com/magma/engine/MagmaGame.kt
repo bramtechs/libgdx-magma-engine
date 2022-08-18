@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.ScreenUtils
-import com.magma.engine.assets.MagmaLoader
 import com.magma.engine.assets.Shapes
 import com.magma.engine.debug.Debugger
 import com.magma.engine.debug.MagmaLogger
@@ -45,6 +44,8 @@ abstract class MagmaGame(private val assetFolder: String) : Game() {
         // render all the things
         ScreenUtils.clear(bgColor.r, bgColor.g, bgColor.b, bgColor.a)
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT or GL30.GL_DEPTH_BUFFER_BIT)
+
+        Debugger.update()
         super.render()
     }
 
@@ -56,7 +57,7 @@ abstract class MagmaGame(private val assetFolder: String) : Game() {
         }
         spriteBatch.dispose()
         modelBatch.dispose()
-        Debugger.dispose()
+        MagmaLogger.flush()
     }
 
     companion object {

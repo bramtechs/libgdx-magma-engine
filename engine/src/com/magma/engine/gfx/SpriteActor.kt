@@ -12,19 +12,20 @@ import com.magma.engine.maps.triggers.CustomTrigger
 
 // TODO this class is confusing and dumb
 abstract class SpriteActor(var region: TextureRegion) : Actor(), Drawable, CustomTrigger {
-    private var hasWarned = false
 
     /**
      * Gives the position and dimensions of this SpriteActor in an Rectangle
      * Cache to avoid GC abuse!
      * @return Rectangle is a reference! Do not edit!
      */
-    protected val bounds: Rectangle
+    val bounds: Rectangle
 
     val centerX: Float
         get() = bounds.x + bounds.width * 0.5f
     val centerY: Float
         get() = bounds.y + bounds.height * 0.5f
+
+    private var hasInitiated: Boolean = false
 
     init {
         // resize to world units
@@ -39,6 +40,11 @@ abstract class SpriteActor(var region: TextureRegion) : Actor(), Drawable, Custo
         setOrigin(Align.center)
     }
 
+    /**
+    Runs one tick after the actor is created
+     **/
+    open fun lateInit(){}
+
     fun setSpriteRegion(region: TextureRegion) {
         this.region = region
         width = region.regionWidth*MapStage.scaleFactor.x
@@ -47,6 +53,9 @@ abstract class SpriteActor(var region: TextureRegion) : Actor(), Drawable, Custo
     }
 
     override fun act(delta: Float) {
+        if (!hasInitiated){
+           lateInit();
+        }
         bounds.set(x,y,width, height)
         super.act(delta)
     }

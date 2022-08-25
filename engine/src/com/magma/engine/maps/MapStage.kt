@@ -28,6 +28,7 @@ class MapStage(private val builder: MapTriggerBuilder, private val addActors: (s
         val dialog = Dialog(300, 120)
         uiStage.addActor(dialog)
         dialog.toFront()
+        isDebugAll = true
 
         Debugger.addModule(this,MapModule(this))
     }

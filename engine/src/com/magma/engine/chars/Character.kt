@@ -1,17 +1,16 @@
 package com.magma.engine.chars
 
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode
-import com.badlogic.gdx.math.Intersector
-import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Shape2D
+import com.badlogic.gdx.scenes.scene2d.Actor
+import com.magma.engine.assets.Shapes
 import com.magma.engine.collision.Triggered
-import com.magma.engine.debug.MagmaLogger
 import com.magma.engine.entities.Entity
 import com.magma.engine.entities.EntityComponent
 import com.magma.engine.gfx.AnimSlot
 import com.magma.engine.gfx.AnimatedSprite
-import com.magma.engine.utils.MagmaMath
 
 abstract class Character(
     override val entity: Entity,
@@ -25,37 +24,18 @@ abstract class Character(
         Up, Down, Right, Left
     }
 
-    private var stopFrames = 0
-    private var lastIntersect: Rectangle? = null
-    private var direction: Direction
+    private var direction: Direction = Direction.Down;
+
+    // actor for doing hitbox checks
+    private val collider: CharacterCollider = CharacterCollider(this)
 
     init {
         setPlayMode(PlayMode.LOOP)
         setCurrentAnimation(animDown)
-        direction = Direction.Up
     }
 
-    fun collisionPush(outOf: Rectangle) {
-        if (lastIntersect == null) {
-            lastIntersect = Rectangle()
-        }
-        lastIntersect = Rectangle()
-        val shape = MagmaMath.extractShape(this)
-        if (shape is Rectangle) {
-            Intersector.intersectRectangles(outOf, shape, lastIntersect)
-        } else {
-            throw IllegalArgumentException("Characters only support rectangles as collision shape")
-        }
-
-        // stop the current animation
-        stop()
-        // TODO calculate simple direction between two shapes and push that way
-
-        val moveX = 0f
-        val moveY = 0f
-
-        x += moveX
-        y += moveY
+    override fun lateInit(){
+       stage.addActor(collider)
     }
 
     override fun moveBy(x: Float, y: Float) {
@@ -74,16 +54,24 @@ abstract class Character(
             setCurrentAnimation(animDown)
             direction = Direction.Down
         }
-        stopFrames = 0
-        super.moveBy(x, y)
+        // movy by from super
+        if (collider.canMove(x,y)) {
+            this.x += x;
+            this.y += y;
+        }else{
+            stop();
+        }
     }
 
-    override fun act(delta: Float) {
-        stopFrames++
-        if (stopFrames > 1) {
-            stop()
-        }
-        super.act(delta)
+    override fun draw(batch: Batch, parentAlpha: Float) {
+        collider.draw(batch,parentAlpha)
+        super.draw(batch, parentAlpha)
+    }
+
+    // cleanup colllider
+    override fun remove(): Boolean {
+        collider.remove()
+        return super.remove()
     }
 
     override val shape : Shape2D
